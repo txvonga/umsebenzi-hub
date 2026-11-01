@@ -1,4 +1,3 @@
-import { createClient } from '@/utils/supabase/server' // If you still have supabase imports here, remove them!
 import { sql } from '@/lib/db'
 
 export async function getFreelancers({
