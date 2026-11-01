@@ -2,7 +2,7 @@ import { sql } from '@/lib/db'
 import { FreelancerCard } from '@/components/FreelancerCard'
 import { notFound } from 'next/navigation'
 
-export default async function SeoFreelancerPage({ params }: { params: { category: string, city: string } }) {
+export default async function SeoFreelancerPage({ params }: { params: { slug: string, city: string } }) {
   const decodedCity = decodeURIComponent(params.city).replace('-', ' ')
 
   const freelancersData = await sql`
@@ -10,10 +10,10 @@ export default async function SeoFreelancerPage({ params }: { params: { category
     FROM freelancer_profiles f
     JOIN profiles p ON f.user_id = p.id
     JOIN categories c ON f.category_id = c.id
-    WHERE f.status = 'approved' AND c.slug = ${params.category} AND LOWER(p.city) = LOWER(${decodedCity})
+    WHERE f.status = 'approved' AND c.slug = ${params.slug} AND LOWER(p.city) = LOWER(${decodedCity})
   `
 
-  if (freelancersData.length === 0 && params.category === 'invalid') notFound()
+  if (freelancersData.length === 0 && params.slug === 'invalid') notFound()
 
   const freelancers = freelancersData.map((item: any) => ({
     id: item.id, slug: item.slug, full_name: item.full_name, headline: item.headline,
@@ -27,10 +27,10 @@ export default async function SeoFreelancerPage({ params }: { params: { category
     <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
       <div className="text-center max-w-2xl mx-auto mb-12">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl capitalize">
-          {params.category.replace('-', ' ')} in {decodedCity}
+          {params.slug.replace('-', ' ')} in {decodedCity}
         </h1>
         <p className="mt-4 text-gray-500 dark:text-gray-400">
-          Find the best {params.category.replace('-', ' ')} freelancers in {decodedCity}. Hired directly on WhatsApp.
+          Find the best {params.slug.replace('-', ' ')} freelancers in {decodedCity}. Hired directly on WhatsApp.
         </p>
       </div>
 
