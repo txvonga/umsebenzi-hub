@@ -12,7 +12,6 @@ import { site } from '@/lib/site'
 export default function HomePage() {
   return (
     <>
-      {/* HERO */}
       <section className="relative overflow-hidden bg-glow-gradient border-b border-gray-200 dark:border-white/5 transition-colors duration-300">
         <div className="mx-auto max-w-7xl px-4 pb-24 pt-20 sm:px-6 sm:pt-28 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
@@ -44,7 +43,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CATEGORIES */}
       <section aria-labelledby="categories-heading" className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
@@ -58,7 +56,6 @@ export default function HomePage() {
         </ul>
       </section>
 
-      {/* FEATURED FREELANCERS */}
       <section aria-labelledby="featured-heading" className="border-y border-gray-200 bg-gray-50 dark:border-white/5 dark:bg-[#0A0A0A]/50 transition-colors duration-300">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <div className="flex flex-wrap items-end justify-between gap-4">
@@ -74,7 +71,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* LATEST JOBS */}
       <section aria-labelledby="jobs-heading" className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
@@ -88,7 +84,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* HOW IT WORKS */}
       <section aria-labelledby="how-heading" className="bg-gray-100 dark:bg-[#121212] border-y border-gray-200 dark:border-white/5 transition-colors duration-300">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
@@ -138,7 +133,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* TRUST */}
       <section aria-labelledby="trust-heading" className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="rounded-3xl border border-brand/20 bg-brand/5 p-6 sm:p-10 relative overflow-hidden transition-colors duration-300">
           <div className="absolute top-0 right-0 -mr-32 -mt-32 h-64 w-64 rounded-full bg-brand/10 dark:bg-brand/20 blur-3xl transition-colors duration-300"></div>
@@ -173,7 +167,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* DUAL CTA */}
       <section className="mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
         <div className="grid gap-6 md:grid-cols-2">
           <div className="rounded-3xl bg-brand p-8 text-white relative overflow-hidden">

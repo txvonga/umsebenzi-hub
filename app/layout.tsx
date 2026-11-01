@@ -10,8 +10,24 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'sw
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: { default: `${site.name} - ${site.tagline}`, template: `%s · ${site.name}` },
+  title: {
+    default: `${site.name} - ${site.tagline}`,
+    template: `%s · ${site.name}`,
+  },
   description: site.description,
+  openGraph: {
+    type: 'website',
+    siteName: site.name,
+    title: `${site.name} - ${site.tagline}`,
+    description: site.description,
+    url: site.url,
+    locale: 'en_ZW',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `${site.name} - ${site.tagline}`,
+    description: site.description,
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -19,7 +35,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning className={inter.variable}>
       <body className="flex min-h-dvh flex-col font-sans">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded-lg focus:bg-brand focus:px-4 focus:py-2 focus:text-white">
+          <a
+            href="#main"
+            className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded-lg focus:bg-brand focus:px-4 focus:py-2 focus:text-white"
+          >
             Skip to content
           </a>
           <Navbar />
