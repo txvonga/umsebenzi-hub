@@ -8,14 +8,28 @@ export default async function EditProfilePage() {
   const session = await auth.api.getSession({ headers: headers() })
   if (!session) redirect('/login')
 
-  // Fetch categories for the dropdown
   const categories = await sql`SELECT id, name FROM categories ORDER BY name ASC`
 
-  // Fetch existing profile (if it exists)
   const profiles = await sql`
     SELECT * FROM freelancer_profiles WHERE user_id = ${session.user.id}
   `
   const profile = profiles[0] || null
+
+  // Fetch the user's WhatsApp number
+  const userProfiles = await sql`SELECT whatsapp_number FROM profiles WHERE id = ${session.user.id}`
+  const whatsapp_number = userProfiles[0]?.whatsapp_number || ''
+
+  // Fetch existing skills
+  let skills: string[] = []
+  if (profile) {
+    const skillsData = await sql`
+      SELECT s.name 
+      FROM freelancer_skills fs
+      JOIN skills s ON fs.skill_id = s.id
+      WHERE fs.freelancer_id = ${profile.id}
+    `
+    skills = skillsData.map((s: any) => s.name)
+  }
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
@@ -26,7 +40,12 @@ export default async function EditProfilePage() {
         </p>
       </div>
       
-      <ProfileForm profile={profile} categories={categories} />
+      <ProfileForm 
+        profile={profile} 
+        categories={categories} 
+        whatsapp_number={whatsapp_number} 
+        existingSkills={skills} 
+      />
     </div>
   )
 }

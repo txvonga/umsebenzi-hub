@@ -2,21 +2,18 @@ import { sql } from '@/lib/db'
 import { notFound } from 'next/navigation'
 import { Avatar } from '@/components/Avatar'
 import { Icon } from '@/components/icons'
-import { Badge } from '@/components/ui/Badge'
 import { SkillTag } from '@/components/ui/SkillTag'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
 import { formatRate } from '@/lib/format'
 import { freelancerWhatsAppMessage } from '@/lib/phone'
-import { site } from '@/lib/site'
 
 export default async function FreelancerProfilePage({
   params,
 }: {
   params: { slug: string }
 }) {
-  // Fetch the specific freelancer by slug
   const freelancers = await sql`
-    SELECT f.*, p.full_name, p.city, p.avatar_url, c.name as category_name
+    SELECT f.*, p.full_name, p.city, p.avatar_url, p.whatsapp_number, c.name as category_name
     FROM freelancer_profiles f
     JOIN profiles p ON f.user_id = p.id
     LEFT JOIN categories c ON f.category_id = c.id
@@ -29,8 +26,11 @@ export default async function FreelancerProfilePage({
     notFound()
   }
 
-  // Mock phone number for now (will connect to profiles table later)
-  const phoneNumber = '+263771234567'
+  const skillsData = await sql`
+    SELECT s.name FROM freelancer_skills fs
+    JOIN skills s ON fs.skill_id = s.id
+    WHERE fs.freelancer_id = ${freelancer.id}
+  `
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
@@ -63,7 +63,7 @@ export default async function FreelancerProfilePage({
           </div>
           <div className="flex-1 min-w-[150px] flex items-center sm:justify-end">
             <WhatsAppButton 
-              phone={phoneNumber} 
+              phone={freelancer.whatsapp_number || '+263771234567'} 
               message={freelancerWhatsAppMessage(freelancer.full_name, freelancer.slug)} 
               className="w-full sm:w-auto" 
             />
@@ -80,10 +80,11 @@ export default async function FreelancerProfilePage({
         <div className="mt-8">
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">Skills & Expertise</h2>
           <div className="mt-3 flex flex-wrap gap-2">
-            {/* Placeholder skills until we build the skills table */}
-            <SkillTag>Communication</SkillTag>
-            <SkillTag>Problem Solving</SkillTag>
-            <SkillTag>{freelancer.category_name}</SkillTag>
+            {skillsData.length > 0 ? (
+              skillsData.map((s: any) => <SkillTag key={s.name}>{s.name}</SkillTag>)
+            ) : (
+              <p className="text-sm text-gray-500">No skills listed yet.</p>
+            )}
           </div>
         </div>
       </div>
