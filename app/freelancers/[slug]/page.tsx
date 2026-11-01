@@ -4,14 +4,11 @@ import { Avatar } from '@/components/Avatar'
 import { Icon } from '@/components/icons'
 import { SkillTag } from '@/components/ui/SkillTag'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
+import { ReportButton } from '@/components/ReportButton'
 import { formatRate } from '@/lib/format'
 import { freelancerWhatsAppMessage } from '@/lib/phone'
 
-export default async function FreelancerProfilePage({
-  params,
-}: {
-  params: { slug: string }
-}) {
+export default async function FreelancerProfilePage({ params }: { params: { slug: string } }) {
   const freelancers = await sql`
     SELECT f.*, p.full_name, p.city, p.avatar_url, p.whatsapp_number, c.name as category_name
     FROM freelancer_profiles f
@@ -21,10 +18,7 @@ export default async function FreelancerProfilePage({
   `
 
   const freelancer = freelancers[0]
-
-  if (!freelancer) {
-    notFound()
-  }
+  if (!freelancer) notFound()
 
   const skillsData = await sql`
     SELECT s.name FROM freelancer_skills fs
@@ -50,6 +44,7 @@ export default async function FreelancerProfilePage({
               </div>
             </div>
           </div>
+          <ReportButton targetType="freelancer" targetId={freelancer.id} />
         </div>
 
         <div className="mt-8 flex flex-wrap gap-4 border-y border-gray-200 py-6 dark:border-white/10">
@@ -66,15 +61,15 @@ export default async function FreelancerProfilePage({
               phone={freelancer.whatsapp_number || '+263771234567'} 
               message={freelancerWhatsAppMessage(freelancer.full_name, freelancer.slug)} 
               className="w-full sm:w-auto" 
+              targetType="freelancer"
+              targetId={freelancer.id}
             />
           </div>
         </div>
 
         <div className="mt-8">
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">About</h2>
-          <p className="mt-3 whitespace-pre-wrap text-gray-600 dark:text-gray-300">
-            {freelancer.bio || 'This freelancer has not added a bio yet.'}
-          </p>
+          <p className="mt-3 whitespace-pre-wrap text-gray-600 dark:text-gray-300">{freelancer.bio || 'This freelancer has not added a bio yet.'}</p>
         </div>
 
         <div className="mt-8">
