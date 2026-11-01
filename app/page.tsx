@@ -6,10 +6,20 @@ import { JobCard } from '@/components/JobCard'
 import { Icon } from '@/components/icons'
 import { LinkButton } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
-import { CATEGORIES, FEATURED_FREELANCERS, LATEST_JOBS } from '@/lib/mock-data'
+import { CATEGORIES } from '@/lib/mock-data' // Categories can stay mocked for now
 import { site } from '@/lib/site'
+import { getFreelancers } from '@/lib/data/freelancers'
+import { getJobs } from '@/lib/data/jobs'
 
-export default function HomePage() {
+export default async function HomePage() {
+  // Fetch real data from the database
+  const freelancers = await getFreelancers({})
+  const jobs = await getJobs({})
+
+  // Take the first 6 freelancers and 4 jobs to display
+  const featuredFreelancers = freelancers.slice(0, 6)
+  const latestJobs = jobs.slice(0, 4)
+
   return (
     <>
       <section className="relative overflow-hidden bg-glow-gradient border-b border-gray-200 dark:border-white/5 transition-colors duration-300">
@@ -65,9 +75,16 @@ export default function HomePage() {
             </div>
             <LinkButton href="/freelancers" variant="ghost" size="sm" className="text-brand hover:bg-brand/10">See all talent <Icon name="arrow-right" size={16} /></LinkButton>
           </div>
-          <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {FEATURED_FREELANCERS.map((f) => <FreelancerCard key={f.id} f={f} />)}
-          </div>
+          
+          {featuredFreelancers.length === 0 ? (
+            <div className="mt-8 rounded-2xl border border-dashed border-gray-300 bg-white p-12 text-center dark:border-white/20 dark:bg-white/5">
+              <p className="text-gray-500 dark:text-gray-400">No freelancers available yet. Check back soon!</p>
+            </div>
+          ) : (
+            <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {featuredFreelancers.map((f) => <FreelancerCard key={f.id} f={f} />)}
+            </div>
+          )}
         </div>
       </section>
 
@@ -79,9 +96,16 @@ export default function HomePage() {
           </div>
           <LinkButton href="/jobs" variant="ghost" size="sm" className="text-brand hover:bg-brand/10">See all jobs <Icon name="arrow-right" size={16} /></LinkButton>
         </div>
-        <div className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-2">
-          {LATEST_JOBS.map((j) => <JobCard key={j.id} j={j} />)}
-        </div>
+        
+        {latestJobs.length === 0 ? (
+          <div className="mt-8 rounded-2xl border border-dashed border-gray-300 bg-white p-12 text-center dark:border-white/20 dark:bg-white/5">
+            <p className="text-gray-500 dark:text-gray-400">No jobs available yet. Check back soon!</p>
+          </div>
+        ) : (
+          <div className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-2">
+            {latestJobs.map((j) => <JobCard key={j.id} j={j} />)}
+          </div>
+        )}
       </section>
 
       <section aria-labelledby="how-heading" className="bg-gray-100 dark:bg-[#121212] border-y border-gray-200 dark:border-white/5 transition-colors duration-300">
