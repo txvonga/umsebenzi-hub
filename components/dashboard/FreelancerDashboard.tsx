@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { LinkButton } from '../ui/Button'
 import { Icon } from '../icons'
 
-export function FreelancerDashboard({ profile, completeness }: { profile: any, completeness: number }) {
+export function FreelancerDashboard({ profile, completeness, whatsappClicks }: { profile: any, completeness: number, whatsappClicks: number }) {
   return (
     <div className="space-y-6">
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-[#121212]">
@@ -28,7 +28,25 @@ export function FreelancerDashboard({ profile, completeness }: { profile: any, c
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-3">
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-[#121212]">
+          <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Your Activity</h3>
+          <div className="space-y-4">
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-gray-500 dark:text-gray-400">Profile views</span>
+              <span className="font-medium text-gray-900 dark:text-white">12</span>
+            </div>
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-gray-500 dark:text-gray-400">WhatsApp clicks</span>
+              <span className="font-medium text-brand">{whatsappClicks}</span>
+            </div>
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-gray-500 dark:text-gray-400">Proposals sent</span>
+              <Link href="/dashboard/proposals" className="font-medium text-brand hover:underline">View</Link>
+            </div>
+          </div>
+        </div>
+
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-[#121212]">
           <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Quick Links</h3>
           <div className="space-y-3">
@@ -42,8 +60,8 @@ export function FreelancerDashboard({ profile, completeness }: { profile: any, c
           <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand/10 text-brand mb-4">
             <Icon name="search" size={24} />
           </span>
-          <h3 className="font-semibold text-gray-900 dark:text-white">Find your next project</h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 mb-4">Browse the latest jobs and send a proposal.</p>
+          <h3 className="font-semibold text-gray-900 dark:text-white">Find work</h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 mb-4">Browse the latest jobs.</p>
           <LinkButton href="/jobs" variant="secondary" size="sm">Browse Jobs</LinkButton>
         </div>
       </div>
