@@ -1,6 +1,9 @@
 import { getFreelancers } from '@/lib/data/freelancers'
 import { FreelancerCard } from '@/components/FreelancerCard'
 import { SearchBar } from '@/components/SearchBar'
+import { auth } from '@/lib/auth'
+import { headers } from 'next/headers'
+import { redirect } from 'next/navigation'
 
 export const metadata = { title: 'Find Talent | Umsebenzi Hub' }
 
@@ -9,6 +12,12 @@ export default async function FreelancersPage({
 }: {
   searchParams: { q?: string; category?: string; mode?: string }
 }) {
+  // AUTH GATE
+  const session = await auth.api.getSession({ headers: headers() })
+  if (!session) {
+    redirect('/login')
+  }
+
   const freelancers = await getFreelancers(searchParams)
 
   return (

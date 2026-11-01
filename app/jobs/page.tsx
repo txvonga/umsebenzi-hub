@@ -1,6 +1,9 @@
 import { getJobs } from '@/lib/data/jobs'
 import { JobCard } from '@/components/JobCard'
 import { SearchBar } from '@/components/SearchBar'
+import { auth } from '@/lib/auth'
+import { headers } from 'next/headers'
+import { redirect } from 'next/navigation'
 
 export const metadata = { title: 'Find Work | Umsebenzi Hub' }
 
@@ -9,6 +12,12 @@ export default async function JobsPage({
 }: {
   searchParams: { q?: string; category?: string; mode?: string }
 }) {
+  // AUTH GATE
+  const session = await auth.api.getSession({ headers: headers() })
+  if (!session) {
+    redirect('/login')
+  }
+
   const jobs = await getJobs(searchParams)
 
   return (
