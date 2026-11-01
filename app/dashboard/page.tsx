@@ -6,35 +6,25 @@ import { FreelancerDashboard } from '@/components/dashboard/FreelancerDashboard'
 import { ClientDashboard } from '@/components/dashboard/ClientDashboard'
 
 export default async function DashboardPage() {
-  const session = await auth.api.getSession({
-    headers: headers()
-  })
+  const session = await auth.api.getSession({ headers: headers() })
+  if (!session) redirect('/login')
 
-  if (!session) {
-    redirect('/login')
-  }
-
-  // 1. Check if the user has a profile
-  let profileResult = await sql`
-    SELECT * FROM profiles WHERE id = ${session.user.id}
-  `
+  // 1. Fetch the main profile
+  let profileResult = await sql`SELECT * FROM profiles WHERE id = ${session.user.id}`
   let profile = profileResult[0]
 
-  // 2. If no profile exists, create one
+  // 2. Create profile if it doesn't exist
   if (!profile) {
     const userRole = (session.user as any).role || 'freelancer'
-    
-    await sql`
-      INSERT INTO profiles (id, full_name, role)
-      VALUES (${session.user.id}, ${session.user.name}, ${userRole})
-    `
-    
+    await sql`INSERT INTO profiles (id, full_name, role) VALUES (${session.user.id}, ${session.user.name}, ${userRole})`
     profileResult = await sql`SELECT * FROM profiles WHERE id = ${session.user.id}`
     profile = profileResult[0]
   }
 
-  // 3. If the user is a client, fetch their recent jobs
   let clientJobs: any[] = []
+  let completeness = 0
+
+  // 3. Role-specific data fetching
   if (profile.role === 'client') {
     clientJobs = await sql`
       SELECT j.*, c.name as category_name 
@@ -44,6 +34,27 @@ export default async function DashboardPage() {
       ORDER BY j.created_at DESC
       LIMIT 3
     `
+  } else {
+    // Calculate Freelancer Completeness
+    const fProfiles = await sql`SELECT * FROM freelancer_profiles WHERE user_id = ${session.user.id}`
+    const fProfile = fProfiles[0]
+    
+    let skillsCount = 0
+    if (fProfile) {
+      const skills = await sql`SELECT id FROM freelancer_skills WHERE freelancer_id = ${fProfile.id}`
+      skillsCount = skills.length
+    }
+
+    let filled = 0
+    if (fProfile?.headline) filled++
+    if (fProfile?.bio) filled++
+    if (fProfile?.category_id) filled++
+    if (fProfile?.hourly_rate) filled++
+    if (profile.whatsapp_number) filled++ // From the main profiles table
+    if (skillsCount > 0) filled++
+
+    // 6 total fields possible
+    completeness = Math.round((filled / 6) * 100)
   }
 
   return (
@@ -65,7 +76,7 @@ export default async function DashboardPage() {
       {profile.role === 'client' ? (
         <ClientDashboard profile={profile} recentJobs={clientJobs} />
       ) : (
-        <FreelancerDashboard profile={profile} />
+        <FreelancerDashboard profile={profile} completeness={completeness} />
       )}
     </div>
   )

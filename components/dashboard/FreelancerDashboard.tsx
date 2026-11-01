@@ -2,22 +2,29 @@ import Link from 'next/link'
 import { LinkButton } from '../ui/Button'
 import { Icon } from '../icons'
 
-export function FreelancerDashboard({ profile }: { profile: any }) {
+export function FreelancerDashboard({ profile, completeness }: { profile: any, completeness: number }) {
   return (
     <div className="space-y-6">
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-[#121212]">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Profile completeness</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Complete your profile to get hired faster.</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {completeness === 100 ? 'Your profile is fully complete. Great job!' : 'Complete your profile to get hired faster.'}
+            </p>
           </div>
-          <span className="text-2xl font-bold text-brand">40%</span>
+          <span className="text-2xl font-bold text-brand">{completeness}%</span>
         </div>
         <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-white/10">
-          <div className="h-full w-[40%] bg-brand rounded-full"></div>
+          <div 
+            className="h-full bg-brand rounded-full transition-all duration-500" 
+            style={{ width: `${completeness}%` }}
+          ></div>
         </div>
         <div className="mt-6">
-          <LinkButton href={`/dashboard/profile`} size="sm">Edit Profile</LinkButton>
+          <LinkButton href={`/dashboard/profile`} size="sm">
+            {completeness === 100 ? 'View Profile' : 'Complete Profile'}
+          </LinkButton>
         </div>
       </div>
 
