@@ -5,6 +5,7 @@ import { Icon } from '@/components/icons'
 import { SkillTag } from '@/components/ui/SkillTag'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
 import { ReportButton } from '@/components/ReportButton'
+import { FeatureButton } from '@/components/FeatureButton'
 import { ViewTracker } from '@/components/ViewTracker'
 import { formatRate } from '@/lib/format'
 import { freelancerWhatsAppMessage } from '@/lib/phone'
@@ -27,9 +28,12 @@ export default async function FreelancerProfilePage({ params }: { params: { slug
     WHERE fs.freelancer_id = ${freelancer.id}
   `
 
+  const portfolioItems = await sql`
+    SELECT * FROM portfolio_items WHERE freelancer_id = ${freelancer.id} ORDER BY created_at DESC
+  `
+
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
-      {/* Invisible component that logs the view */}
       <ViewTracker freelancerId={freelancer.id} />
 
       <div className="rounded-3xl border border-gray-200 bg-white p-8 shadow-sm dark:border-white/10 dark:bg-[#121212]">
@@ -45,10 +49,15 @@ export default async function FreelancerProfilePage({ params }: { params: { slug
               <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
                 <span className="flex items-center gap-1"><Icon name="map-pin" size={14} /> {freelancer.city || 'Zimbabwe'}</span>
                 <span className="flex items-center gap-1"><Icon name="briefcase" size={14} /> {freelancer.category_name}</span>
+                <span className="flex items-center gap-1"><Icon name="globe" size={14} /> {freelancer.languages || 'English'}</span>
+                <span className="flex items-center gap-1 capitalize"><Icon name="star" size={14} /> {freelancer.experience_level || 'Intermediate'}</span>
               </div>
             </div>
           </div>
-          <ReportButton targetType="freelancer" targetId={freelancer.id} />
+          <div className="flex items-center gap-4">
+            <FeatureButton type="profile" />
+            <ReportButton targetType="freelancer" targetId={freelancer.id} />
+          </div>
         </div>
 
         <div className="mt-8 flex flex-wrap gap-4 border-y border-gray-200 py-6 dark:border-white/10">
@@ -85,6 +94,26 @@ export default async function FreelancerProfilePage({ params }: { params: { slug
               <p className="text-sm text-gray-500">No skills listed yet.</p>
             )}
           </div>
+        </div>
+
+        <div className="mt-8">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Portfolio</h2>
+          {portfolioItems.length === 0 ? (
+            <p className="text-sm text-gray-500">No portfolio items added yet.</p>
+          ) : (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+              {portfolioItems.map((item: any) => (
+                <div key={item.id} className="group relative overflow-hidden rounded-xl border border-gray-200 bg-gray-50 dark:border-white/10 dark:bg-white/5 aspect-video">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={item.image_url} alt={item.title} className="h-full w-full object-cover transition group-hover:scale-105" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 transition group-hover:opacity-100 flex flex-col justify-end p-4">
+                    <p className="font-semibold text-white">{item.title}</p>
+                    <p className="text-xs text-white/80 line-clamp-1">{item.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

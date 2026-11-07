@@ -4,6 +4,7 @@ import { Icon } from '@/components/icons'
 import { Badge } from '@/components/ui/Badge'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
 import { ReportButton } from '@/components/ReportButton'
+import { FeatureButton } from '@/components/FeatureButton'
 import { LinkButton } from '@/components/ui/Button'
 import { formatBudget, timeAgo } from '@/lib/format'
 import { jobWhatsAppMessage } from '@/lib/phone'
@@ -39,6 +40,7 @@ export default async function JobDetailPage({ params }: { params: { slug: string
           </div>
           
           <div className="flex flex-col items-end gap-3">
+            <FeatureButton type="job" />
             <ReportButton targetType="job" targetId={job.id} />
             <div className="rounded-2xl bg-gray-50 p-4 border border-gray-100 dark:bg-white/5 dark:border-white/10 shrink-0">
               <p className="text-sm text-gray-500 dark:text-gray-400">Budget</p>

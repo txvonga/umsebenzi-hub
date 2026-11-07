@@ -100,6 +100,22 @@ export function ProfileForm({
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <div>
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Experience Level</label>
+          <select name="experience_level" required defaultValue={profile?.experience_level || 'intermediate'} className="mt-1 h-11 w-full rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 focus:border-brand focus:outline-none dark:border-white/10 dark:bg-black dark:text-white">
+            <option value="entry">Entry Level</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="expert">Expert</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Languages Spoken</label>
+          <input name="languages" type="text" required defaultValue={profile?.languages || 'English'} placeholder="e.g. English, Shona, Ndebele" className="mt-1 h-11 w-full rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 focus:border-brand focus:outline-none dark:border-white/10 dark:bg-black dark:text-white" />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div>
           <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Hourly Rate</label>
           <input name="hourly_rate" type="number" required min="1" defaultValue={profile?.hourly_rate || ''} placeholder="25" className="mt-1 h-11 w-full rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 focus:border-brand focus:outline-none dark:border-white/10 dark:bg-black dark:text-white" />
         </div>
