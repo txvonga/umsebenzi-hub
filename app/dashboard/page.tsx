@@ -22,6 +22,7 @@ export default async function DashboardPage() {
   let clientJobs: any[] = []
   let completeness = 0
   let whatsappClicks = 0
+  let profileViews = 0
 
   if (profile.role === 'client') {
     clientJobs = await sql`
@@ -38,10 +39,11 @@ export default async function DashboardPage() {
     
     let skillsCount = 0
     if (fProfile) {
+      profileViews = fProfile.view_count || 0
+      
       const skills = await sql`SELECT id FROM freelancer_skills WHERE freelancer_id = ${fProfile.id}`
       skillsCount = skills.length
       
-      // Fetch WhatsApp clicks
       const clicks = await sql`
         SELECT COUNT(*) as count FROM contact_events 
         WHERE target_type = 'freelancer' AND target_id = ${fProfile.id}
@@ -78,7 +80,12 @@ export default async function DashboardPage() {
       {profile.role === 'client' ? (
         <ClientDashboard profile={profile} recentJobs={clientJobs} />
       ) : (
-        <FreelancerDashboard profile={profile} completeness={completeness} whatsappClicks={whatsappClicks} />
+        <FreelancerDashboard 
+          profile={profile} 
+          completeness={completeness} 
+          whatsappClicks={whatsappClicks} 
+          profileViews={profileViews} 
+        />
       )}
     </div>
   )

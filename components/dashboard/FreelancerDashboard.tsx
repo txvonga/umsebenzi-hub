@@ -2,7 +2,17 @@ import Link from 'next/link'
 import { LinkButton } from '../ui/Button'
 import { Icon } from '../icons'
 
-export function FreelancerDashboard({ profile, completeness, whatsappClicks }: { profile: any, completeness: number, whatsappClicks: number }) {
+export function FreelancerDashboard({ 
+  profile, 
+  completeness, 
+  whatsappClicks, 
+  profileViews 
+}: { 
+  profile: any, 
+  completeness: number, 
+  whatsappClicks: number, 
+  profileViews: number 
+}) {
   return (
     <div className="space-y-6">
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-[#121212]">
@@ -34,7 +44,7 @@ export function FreelancerDashboard({ profile, completeness, whatsappClicks }: {
           <div className="space-y-4">
             <div className="flex justify-between items-center text-sm">
               <span className="text-gray-500 dark:text-gray-400">Profile views</span>
-              <span className="font-medium text-gray-900 dark:text-white">12</span>
+              <span className="font-medium text-gray-900 dark:text-white">{profileViews}</span>
             </div>
             <div className="flex justify-between items-center text-sm">
               <span className="text-gray-500 dark:text-gray-400">WhatsApp clicks</span>

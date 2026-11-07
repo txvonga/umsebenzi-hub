@@ -5,6 +5,7 @@ import { Icon } from '@/components/icons'
 import { SkillTag } from '@/components/ui/SkillTag'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
 import { ReportButton } from '@/components/ReportButton'
+import { ViewTracker } from '@/components/ViewTracker'
 import { formatRate } from '@/lib/format'
 import { freelancerWhatsAppMessage } from '@/lib/phone'
 
@@ -28,6 +29,9 @@ export default async function FreelancerProfilePage({ params }: { params: { slug
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
+      {/* Invisible component that logs the view */}
+      <ViewTracker freelancerId={freelancer.id} />
+
       <div className="rounded-3xl border border-gray-200 bg-white p-8 shadow-sm dark:border-white/10 dark:bg-[#121212]">
         <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-6">
