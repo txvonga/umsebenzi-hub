@@ -4,22 +4,26 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { updateFreelancerProfile } from '@/lib/actions/freelancer'
 import { Button } from '@/components/ui/Button'
+import { ImageUpload } from '@/components/ImageUpload'
 
 export function ProfileForm({ 
   profile, 
   categories, 
   whatsapp_number, 
-  existingSkills 
+  existingSkills,
+  avatar_url
 }: { 
   profile: any, 
   categories: any[], 
   whatsapp_number: string,
-  existingSkills: string[]
+  existingSkills: string[],
+  avatar_url: string | null
 }) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const [newAvatarUrl, setNewAvatarUrl] = useState(avatar_url || '')
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -28,6 +32,8 @@ export function ProfileForm({
     setSuccess('')
 
     const formData = new FormData(e.currentTarget)
+    // Manually append the avatar URL from state
+    formData.set('avatar_url', newAvatarUrl)
     
     try {
       await updateFreelancerProfile(formData)
@@ -46,6 +52,11 @@ export function ProfileForm({
       {success && <div className="rounded-lg bg-green-50 p-3 text-sm text-green-700 dark:bg-green-900/20 dark:text-green-400">{success}</div>}
 
       <div>
+        <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Profile Photo</label>
+        <ImageUpload initialImage={newAvatarUrl} onUpload={setNewAvatarUrl} />
+      </div>
+
+      <div className="border-t border-gray-200 dark:border-white/10 pt-6">
         <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Professional Headline</label>
         <input name="headline" type="text" required defaultValue={profile?.headline || ''} placeholder="e.g. Full-stack developer building fast web apps" className="mt-1 h-11 w-full rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 focus:border-brand focus:outline-none dark:border-white/10 dark:bg-black dark:text-white" />
       </div>
@@ -58,7 +69,7 @@ export function ProfileForm({
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <div>
           <label className="text-sm font-medium text-gray-700 dark:text-gray-300">WhatsApp Number</label>
-          <input name="whatsapp_number" type="tel" required defaultValue={whatsapp_number} placeholder="e.g. 0771234567 or +263771234567" className="mt-1 h-11 w-full rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 focus:border-brand focus:outline-none dark:border-white/10 dark:bg-black dark:text-white" />
+          <input name="whatsapp_number" type="tel" required defaultValue={whatsapp_number} placeholder="e.g. 0771234567" className="mt-1 h-11 w-full rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-900 focus:border-brand focus:outline-none dark:border-white/10 dark:bg-black dark:text-white" />
           <p className="mt-1 text-xs text-gray-500">We will convert this to +263 format automatically.</p>
         </div>
 

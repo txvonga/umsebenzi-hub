@@ -28,13 +28,16 @@ export async function updateFreelancerProfile(formData: FormData) {
   const availability = formData.get('availability') as string
   const whatsapp_raw = formData.get('whatsapp_number') as string
   const skills_raw = formData.get('skills') as string
+  const avatar_url = formData.get('avatar_url') as string
 
   // Normalise WhatsApp number to +263 format
   const whatsapp_number = whatsapp_raw ? normaliseZimPhone(whatsapp_raw) : null
 
-  // 1. Update the main profiles table with WhatsApp number
+  // 1. Update the main profiles table
   await sql`
-    UPDATE profiles SET whatsapp_number = ${whatsapp_number} WHERE id = ${session.user.id}
+    UPDATE profiles 
+    SET whatsapp_number = ${whatsapp_number}, avatar_url = ${avatar_url || null} 
+    WHERE id = ${session.user.id}
   `
 
   // 2. Upsert the freelancer profile
@@ -68,20 +71,15 @@ export async function updateFreelancerProfile(formData: FormData) {
 
   // 3. Handle Skills
   if (skills_raw) {
-    // Delete existing skills for this freelancer
     await sql`DELETE FROM freelancer_skills WHERE freelancer_id = ${freelancerProfileId}`
-    
-    // Split the comma-separated string and clean it up
     const skillNames = skills_raw.split(',').map(s => s.trim()).filter(Boolean)
     
     for (const name of skillNames) {
-      // Insert skill if it doesn't exist, then get its ID
       const skill = await sql`
         INSERT INTO skills (name) VALUES (${name})
         ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name
         RETURNING id
       `
-      // Link skill to freelancer
       await sql`
         INSERT INTO freelancer_skills (freelancer_id, skill_id) 
         VALUES (${freelancerProfileId}, ${skill[0].id})

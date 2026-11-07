@@ -15,16 +15,15 @@ export default async function EditProfilePage() {
   `
   const profile = profiles[0] || null
 
-  // Fetch the user's WhatsApp number
-  const userProfiles = await sql`SELECT whatsapp_number FROM profiles WHERE id = ${session.user.id}`
+  // Fetch the user's WhatsApp number and Avatar URL
+  const userProfiles = await sql`SELECT whatsapp_number, avatar_url FROM profiles WHERE id = ${session.user.id}`
   const whatsapp_number = userProfiles[0]?.whatsapp_number || ''
+  const avatar_url = userProfiles[0]?.avatar_url || null
 
-  // Fetch existing skills
   let skills: string[] = []
   if (profile) {
     const skillsData = await sql`
-      SELECT s.name 
-      FROM freelancer_skills fs
+      SELECT s.name FROM freelancer_skills fs
       JOIN skills s ON fs.skill_id = s.id
       WHERE fs.freelancer_id = ${profile.id}
     `
@@ -45,6 +44,7 @@ export default async function EditProfilePage() {
         categories={categories} 
         whatsapp_number={whatsapp_number} 
         existingSkills={skills} 
+        avatar_url={avatar_url}
       />
     </div>
   )
